@@ -64,7 +64,7 @@
           <span>查询示例：</span>
           <div class="space-x-2">
             <a 
-              :href="`https://fofa.red/result?qbase64=${getBase64Query}`" 
+              :href="`https://fofa.info/result?qbase64=${getBase64Query}`" 
               target="_blank"
               class="text-blue-500 hover:underline"
             >
@@ -72,7 +72,7 @@
             </a>
             <span>|</span>
             <a 
-              href="https://fofa.red" 
+              href="https://fofa.info" 
               target="_blank"
               class="text-blue-500 hover:underline"
             >
