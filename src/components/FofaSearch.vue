@@ -127,9 +127,7 @@
 <script setup>
 import { ref, computed, watch } from 'vue'
 
-const defaultApiUrl = import.meta.env.PROD ? 
-  'https://fofa.red/api/v1/search/all' : 
-  '/api/v1/search/all'
+const defaultApiUrl = '/api/v1/search/all'  // 总是使用代理路径
 const useCustomApi = ref(false)
 const apiUrl = ref(defaultApiUrl)
 const email = ref('')

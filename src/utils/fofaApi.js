@@ -2,9 +2,7 @@ export class FofaApi {
   constructor(apiUrl, email, apiKey) {
     this.email = email
     this.apiKey = apiKey
-    this.baseUrl = import.meta.env.PROD ? 
-      'https://fofa.red/api/v1/search/all' : 
-      '/api/v1/search/all'
+    this.baseUrl = '/api/v1/search/all'
   }
 
   // 添加一个辅助方法来处理 UTF-8 字符串的 Base64 编码
@@ -39,9 +37,7 @@ export class FofaApi {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
-          'X-Requested-With': 'XMLHttpRequest',
-          'Origin': 'https://fofa.red',
-          'Referer': 'https://fofa.red'
+          'X-Requested-With': 'XMLHttpRequest'
         }
       })
 
