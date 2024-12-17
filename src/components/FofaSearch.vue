@@ -181,15 +181,15 @@ const search = () => {
   }
   
   // 处理自定义 API URL
-  let finalApiUrl = apiUrl.value
+  let finalApiUrl = defaultApiUrl
   if (useCustomApi.value) {
     // 如果是完整 URL，直接使用
     if (apiUrl.value.startsWith('http')) {
-      finalApiUrl = apiUrl.value
+      finalApiUrl = `/api/v1/search/all?apiUrl=${encodeURIComponent(apiUrl.value)}`
     } else {
-      // 如果只是域名，添加路径
+      // 如果只是域名，添加到查询参数
       const domain = apiUrl.value.trim().replace(/^https?:\/\//, '').replace(/\/.*$/, '')
-      finalApiUrl = `/api/v1/search/all?apiUrl=${domain}`
+      finalApiUrl = `/api/v1/search/all?apiUrl=${encodeURIComponent(domain)}`
     }
   }
   

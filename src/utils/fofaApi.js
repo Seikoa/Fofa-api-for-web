@@ -1,8 +1,8 @@
 export class FofaApi {
   constructor(apiUrl, email, apiKey) {
+    this.apiUrl = apiUrl
     this.email = email
     this.apiKey = apiKey
-    this.baseUrl = '/api/v1/search/all'
   }
 
   // 添加一个辅助方法来处理 UTF-8 字符串的 Base64 编码
@@ -24,7 +24,7 @@ export class FofaApi {
 
     const base64Query = this.utf8_to_b64(query.trim())
     
-    const params = new URLSearchParams({
+    const url = this.apiUrl + (this.apiUrl.includes('?') ? '&' : '?') + new URLSearchParams({
       email: this.email,
       key: this.apiKey,
       qbase64: base64Query,
@@ -33,7 +33,7 @@ export class FofaApi {
     })
 
     try {
-      const response = await fetch(`${this.baseUrl}?${params}`, {
+      const response = await fetch(url, {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
