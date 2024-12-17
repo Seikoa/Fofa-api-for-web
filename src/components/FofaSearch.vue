@@ -1,26 +1,31 @@
 <template>
   <div class="mb-4 p-4 border rounded">
     <div class="mb-4">
-      <label class="block mb-2">API 配置</label>
+      <label class="block mb-2">URL 选择</label>
       <div class="flex items-center gap-2 mb-2">
+        <select 
+          v-model="selectedDomain" 
+          class="border p-2 rounded flex-1"
+          @change="handleDomainChange"
+        >
+          <option value="fofa.info">FOFA 官方 (fofa.info)</option>
+          <option value="fofa.red">FOFA RED (fofa.red)</option>
+          <option value="custom">自定义域名</option>
+        </select>
+      </div>
+      
+      <!-- 自定义域名输入框 -->
+      <div v-if="selectedDomain === 'custom'" class="mb-2">
         <input
-          v-model="apiUrl"
-          :placeholder="defaultApiUrl"
-          class="border p-2 flex-1"
-          :disabled="!useCustomApi"
+          v-model="customDomain"
+          placeholder="输入域名，例如: fofa.center"
+          class="border p-2 w-full"
         />
-        <label class="flex items-center">
-          <input 
-            type="checkbox" 
-            v-model="useCustomApi"
-            class="mr-2"
-          >
-          自定义域名
-        </label>
+        <div class="text-sm text-gray-500 mt-1">
+          请输入完整域名，无需包含 http:// 或路径
+        </div>
       </div>
-      <div class="text-sm text-gray-500 mb-2">
-        {{ useCustomApi ? '请输入域名，例如: fofa.info 或 fofa.red' : '使用官方域名 fofa.info' }}
-      </div>
+
       <input
         v-model="email"
         placeholder="输入你的 FOFA 注册邮箱"
@@ -128,8 +133,8 @@
 import { ref, computed, watch } from 'vue'
 
 const defaultApiUrl = '/api/v1/search/all'
-const useCustomApi = ref(false)
-const apiUrl = ref(defaultApiUrl)
+const selectedDomain = ref('fofa.info')
+const customDomain = ref('')
 const email = ref('')
 const apiKey = ref('')
 const query = ref('')
@@ -145,29 +150,33 @@ const getBase64Query = computed(() => {
   }
 })
 
-// 监听自定义 API 开关
-watch(useCustomApi, (newVal) => {
-  if (!newVal) {
-    apiUrl.value = defaultApiUrl
+// 监听域名选择变化
+const handleDomainChange = () => {
+  if (selectedDomain.value !== 'custom') {
+    customDomain.value = ''
   }
-})
+}
+
+// 获取最终的域名
+const getFinalDomain = () => {
+  if (selectedDomain.value === 'custom') {
+    return customDomain.value.trim()
+  }
+  return selectedDomain.value
+}
 
 const emit = defineEmits(['search'])
 
 const isValid = computed(() => {
-  return apiUrl.value && 
-         email.value && 
+  return email.value && 
          apiKey.value && 
          query.value &&
          /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)
 })
 
 const clearForm = () => {
-  if (!useCustomApi.value) {
-    apiUrl.value = defaultApiUrl
-  } else {
-    apiUrl.value = ''
-  }
+  selectedDomain.value = 'fofa.info'
+  customDomain.value = ''
   email.value = ''
   apiKey.value = ''
   query.value = ''
@@ -175,23 +184,19 @@ const clearForm = () => {
 }
 
 const search = () => {
-  if (!apiUrl.value || !email.value || !apiKey.value || !query.value) {
+  if (!email.value || !apiKey.value || !query.value) {
     alert('请填写完整的必要信息')
     return
   }
   
-  // 处理自定义 API URL
-  let finalApiUrl = defaultApiUrl
-  if (useCustomApi.value) {
-    // 如果是完整 URL，直接使用
-    if (apiUrl.value.startsWith('http')) {
-      finalApiUrl = `/api/v1/search/all?apiUrl=${encodeURIComponent(apiUrl.value)}`
-    } else {
-      // 如果只是域名，添加到查询参数
-      const domain = apiUrl.value.trim().replace(/^https?:\/\//, '').replace(/\/.*$/, '')
-      finalApiUrl = `/api/v1/search/all?apiUrl=${encodeURIComponent(domain)}`
-    }
+  if (selectedDomain.value === 'custom' && !customDomain.value.trim()) {
+    alert('请输入自定义域名')
+    return
   }
+
+  // 构建 API URL
+  const domain = getFinalDomain()
+  const finalApiUrl = `/api/v1/search/all?apiUrl=${encodeURIComponent(domain)}`
   
   emit('search', {
     apiUrl: finalApiUrl,
