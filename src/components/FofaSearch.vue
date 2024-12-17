@@ -19,7 +19,7 @@
         </label>
       </div>
       <div class="text-sm text-gray-500 mb-2">
-        {{ useCustomApi ? '请输入完整的 API URL' : '使用默认 API 路径，无需修改' }}
+        {{ useCustomApi ? '请输入域名，例如: fofa.info 或 fofa.red' : '使用默认 API 路径，无需修改' }}
       </div>
       <input
         v-model="email"
@@ -127,7 +127,7 @@
 <script setup>
 import { ref, computed, watch } from 'vue'
 
-const defaultApiUrl = '/api/v1/search/all'  // 总是使用代理路径
+const defaultApiUrl = '/api/v1/search/all'
 const useCustomApi = ref(false)
 const apiUrl = ref(defaultApiUrl)
 const email = ref('')
@@ -180,8 +180,21 @@ const search = () => {
     return
   }
   
+  // 处理自定义 API URL
+  let finalApiUrl = apiUrl.value
+  if (useCustomApi.value) {
+    // 如果是完整 URL，直接使用
+    if (apiUrl.value.startsWith('http')) {
+      finalApiUrl = apiUrl.value
+    } else {
+      // 如果只是域名，添加路径
+      const domain = apiUrl.value.trim().replace(/^https?:\/\//, '').replace(/\/.*$/, '')
+      finalApiUrl = `/api/v1/search/all?apiUrl=${domain}`
+    }
+  }
+  
   emit('search', {
-    apiUrl: apiUrl.value,
+    apiUrl: finalApiUrl,
     email: email.value,
     apiKey: apiKey.value,
     query: query.value,
