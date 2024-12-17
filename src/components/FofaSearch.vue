@@ -15,11 +15,11 @@
             v-model="useCustomApi"
             class="mr-2"
           >
-          自定义 API
+          自定义域名
         </label>
       </div>
       <div class="text-sm text-gray-500 mb-2">
-        {{ useCustomApi ? '请输入域名，例如: fofa.info 或 fofa.red' : '使用默认 API 路径，无需修改' }}
+        {{ useCustomApi ? '请输入域名，例如: fofa.info 或 fofa.red' : '使用官方域名 fofa.info' }}
       </div>
       <input
         v-model="email"
