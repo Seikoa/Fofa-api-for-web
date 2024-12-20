@@ -33,10 +33,10 @@
         type="email"
       />
       <input
+        type="text"
         v-model="apiKey"
         placeholder="输入你的 FOFA API Key"
         class="border p-2 w-full"
-        type="password"
       />
     </div>
     
