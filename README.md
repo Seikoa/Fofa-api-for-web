@@ -242,3 +242,6 @@ async function handleRequest(request) {
 3. **CORS 错误**
    - 确保 Worker 中的 CORS 头设置正确
    - 检查请求头配置
+
+### 赞助商
+   - 本项目由YxVM赞助
